@@ -34,6 +34,7 @@ run_analysis <- function(directory = "UCIHARDataset") {
 	
 	Train_files <- list.files("Inertial Signals")
 	
+	
 	setwd("../")
 
 	setwd("test")
@@ -42,9 +43,9 @@ run_analysis <- function(directory = "UCIHARDataset") {
 	Test_Subject <- read.table("subject_test.txt",	sep="", dec=".",header = FALSE)
 
 	Test_files <- list.files("Inertial Signals")
-
+	
 	setwd("~/Coursera/data/")
-
+	
 # Uses descriptive activity names to name the activities in the data set
 # Appropriately labels the data set with descriptive variable names. 
 	names(Test_X_text) <- as.vector(Features$V2)
@@ -60,15 +61,13 @@ run_analysis <- function(directory = "UCIHARDataset") {
 ## Merges the training and the test sets to create one data set.
 	MergedData_Test_Train <- rbind(Test, Train)
 
+	write.table(MergedData_Test_Train, "MergedData_Test_Train.txt", row.name=FALSE)
+
 # Extracts only the measurements on the mean and standard deviation for each measurement. 
 	MergedData_Test_Train_Mean <- colMeans(MergedData_Test_Train[,3:563])
 	MergedData_Test_Train_SD <- apply(MergedData_Test_Train[,3:563],2,sd)
 
 # Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
-#	subjet <- (MergedData_Test_Train["subject id"] == 1)
-#	activity <- (MergedData_Test_Train["activity name"] == 1)
-#	tidydataset <- colMeans(MergedData_Test_Train[subjet & activity, ])
-	
 	tidydataset <- data.frame()
 	tidydataset <- data.frame(t(rep(NA,563)))
 	names(tidydataset) <- names(MergedData_Test_Train)
@@ -80,6 +79,6 @@ run_analysis <- function(directory = "UCIHARDataset") {
 			tidydataset <- rbind(tidydataset, colMeans(MergedData_Test_Train[subjet & activity, ]))
 		}
 	}
-	tidydataset <- tidydataset[-1,]
+	tidydataset <- tidydataset[-1,] ## remove row 1 
 	return(tidydataset)
 }
